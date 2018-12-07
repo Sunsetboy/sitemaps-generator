@@ -3,7 +3,7 @@
   "description": "XML sitemaps generation",
   "version": "0.0.1",
   "require": {
-    "php": "^5.4 || ^7.0",
+    "php": "^5.4 || ^7.0"
   },
   "autoload": {
     "psr-0": {
