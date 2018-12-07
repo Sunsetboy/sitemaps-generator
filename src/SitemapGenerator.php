@@ -23,6 +23,7 @@ class SitemapGenerator
      */
     protected $links = [];
     protected $sitemaps = [];
+    protected $siteUrl;
 
 
     /**
@@ -33,6 +34,12 @@ class SitemapGenerator
     public function setLinks($links)
     {
         $this->links = $links;
+        return $this;
+    }
+    
+    public function setSiteUrl($siteUrl)
+    {
+        $this->siteUrl = $siteUrl;
         return $this;
     }
 
@@ -76,7 +83,7 @@ class SitemapGenerator
             file_put_contents($folder . '/sitemap_' . $sitemapNumber . '.xml', $sitemapContent);
 
             $sitemapIndexItems[] = '<sitemap>
-                  <loc>' . $folder . '/sitemap_' . $sitemapNumber . '.xml</loc>
+                  <loc>' . $this->siteUrl . '/sitemap_' . $sitemapNumber . '.xml</loc>
                   <lastmod>' . $today . '</lastmod></sitemap>';
         }
 
