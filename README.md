@@ -20,6 +20,12 @@ You can also add to your robots.txt file:
 Sitemap: http://yoursite.com/sitemap.xml 
 ```
 
+### Installation
+You can install this package using Composer.
+```
+composer require yurcrm/sitemap-generator
+```
+
 ### Usage example
 ```
 $sitemapGenerator = new SitemapGenerator();
