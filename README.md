@@ -1,9 +1,7 @@
 # XML sitemap generator
 XML sitemap files generator for unlimited sets of links
 
-![](https://img.shields.io/travis/Sunsetboy/sitemaps-generator.svg)
-
-![](https://img.shields.io/github/release/Sunsetboy/sitemaps-generator.svg)
+![](https://img.shields.io/travis/Sunsetboy/sitemaps-generator.svg) ![](https://img.shields.io/github/release/Sunsetboy/sitemaps-generator.svg)
 
 
 ### What is a XML sitemap?
