@@ -22,12 +22,22 @@ class SitemapGenerator
      *  ]
      */
     protected $links = [];
+
+    /**
+     * Each sitemap is a set of links
+     * @var array
+     */
     protected $sitemaps = [];
+
+    /**
+     * The website URL
+     * @var string
+     */
     protected $siteUrl;
 
 
     /**
-     * Загрузка массива ссылок
+     * Setting array of links
      * @param array $links
      * @return SitemapGenerator
      */
@@ -36,7 +46,12 @@ class SitemapGenerator
         $this->links = $links;
         return $this;
     }
-    
+
+    /**
+     * Setting the website URL
+     * @param string $siteUrl
+     * @return $this
+     */
     public function setSiteUrl($siteUrl)
     {
         $this->siteUrl = $siteUrl;
@@ -44,7 +59,7 @@ class SitemapGenerator
     }
 
     /**
-     * Создание массива карт сайта. Каждый элемент - XML с картой максимум из LINKS_PER_FILE_LIMIT ссылок
+     * Creating an array of sitemaps. Each element is XML with up to LINKS_PER_FILE_LIMIT links
      * @return array
      */
     public function createSitemaps()
@@ -67,8 +82,8 @@ class SitemapGenerator
     }
 
     /**
-     * Сохранение карты сайта в папку
-     * @param string $folder Полный путь к папке
+     * Saving files to a folder
+     * @param string $folder absolute path to website root folder
      */
     public function saveAsFiles($folder)
     {
@@ -95,7 +110,7 @@ class SitemapGenerator
     }
 
     /**
-     * Получение шапки XML документа
+     * Getting a header of XML
      * @return string
      */
     private function getHeader()
@@ -105,7 +120,7 @@ class SitemapGenerator
     }
 
     /**
-     * Получение футера XML
+     * Getting a footer of XML
      * @return string
      */
     private function getFooter()
