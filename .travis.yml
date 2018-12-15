@@ -3,7 +3,7 @@ php:
   - 5.4
 
 before_script:
-  - composer install --no-interactions
+  - composer install --no-interaction
 
 script:
   - vendor/bin/phpunit
