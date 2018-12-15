@@ -1,12 +1,12 @@
 {
   "name": "yurcrm/sitemap-generator",
   "description": "XML sitemaps generation",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "require": {
     "php": "^5.4 || ^7.0"
   },
   "require-dev": {
-    "phpunit/phpunit":"^4"
+    "phpunit/phpunit":"4.8.36"
   },
   "autoload": {
     "psr-4": {
