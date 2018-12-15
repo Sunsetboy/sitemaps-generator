@@ -1,6 +1,11 @@
 # XML sitemap generator
 XML sitemap files generator for unlimited sets of links
 
+![](https://img.shields.io/travis/Sunsetboy/sitemaps-generator.svg)
+
+![](https://img.shields.io/github/release/Sunsetboy/sitemaps-generator.svg)
+
+
 ### What is a XML sitemap?
 XML sitemap is a text file with links to pages of a website. Search engines like Google or Yandex use sitemap files to 
 discover web pages. You can help your website to be crawled more quickly by adding a sitemap file to it's root directory.
