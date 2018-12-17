@@ -23,6 +23,9 @@ You can also add to your robots.txt file:
 Sitemap: http://yoursite.com/sitemap.xml 
 ```
 
+### Requirements
+PHP 5.4+
+
 ### Installation
 You can install this package using Composer.
 ```
