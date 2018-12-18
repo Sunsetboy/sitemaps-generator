@@ -4,9 +4,10 @@ namespace SitemapGenerator;
 
 
 /**
- * Генератор XML карты сайта с разбивкой на несколько файлов с лимитом 50000 ссылок в файле
+ * XML sitemaps generator with support of sitemaps with 50000+ pages
  * Class SitemapGenerator
  * @package SitemapGenerator
+ * @author Michael Krutikov. https://github.com/Sunsetboy
  */
 class SitemapGenerator
 {
