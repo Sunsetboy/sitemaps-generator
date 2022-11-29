@@ -26,7 +26,7 @@ Sitemap: http://yoursite.com/sitemap.xml
 ```
 
 ### Requirements
-PHP 5.4+
+PHP 7.2+
 
 ### Installation
 You can install this package using Composer.
