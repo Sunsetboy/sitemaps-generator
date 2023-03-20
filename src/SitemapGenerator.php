@@ -11,7 +11,9 @@ namespace SitemapGenerator;
  */
 class SitemapGenerator
 {
-    const LINKS_PER_FILE_LIMIT = 50000;
+    private int $linksPerFileLimit = 50_000;
+
+    private int $fileSizeLimit = 10 * 1024 * 1024 - 1000;
 
     /**
      * @var array
@@ -22,27 +24,42 @@ class SitemapGenerator
      *      'priority' => 0.5,
      *  ]
      */
-    protected $links = [];
+    protected array $links = [];
 
     /**
      * Each sitemap is a set of links
-     * @var array
      */
-    protected $sitemaps = [];
+    protected array $sitemaps = [];
 
     /**
      * The website URL
-     * @var string
      */
-    protected $siteUrl;
+    protected string $siteUrl = '';
 
+    /**
+     * @param int $linksPerFileLimit
+     * @return SitemapGenerator
+     */
+    public function setLinksPerFileLimit(int $linksPerFileLimit): SitemapGenerator
+    {
+        $this->linksPerFileLimit = $linksPerFileLimit;
+        return $this;
+    }
+
+    /**
+     * @param int $fileSizeLimit
+     * @return SitemapGenerator
+     */
+    public function setFileSizeLimit(int $fileSizeLimit): SitemapGenerator
+    {
+        $this->fileSizeLimit = $fileSizeLimit;
+        return $this;
+    }
 
     /**
      * Setting array of links
-     * @param array $links
-     * @return SitemapGenerator
      */
-    public function setLinks($links)
+    public function setLinks(array $links): self
     {
         $this->links = $links;
         return $this;
@@ -50,33 +67,34 @@ class SitemapGenerator
 
     /**
      * Setting the website URL
-     * @param string $siteUrl
-     * @return $this
      */
-    public function setSiteUrl($siteUrl)
+    public function setSiteUrl(string $siteUrl): self
     {
         $this->siteUrl = $siteUrl;
         return $this;
     }
 
     /**
-     * Creating an array of sitemaps. Each element is XML with up to LINKS_PER_FILE_LIMIT links
-     * @return array
+     * Creating an array of sitemaps. Each element is XML with up to $linksPerFileLimit links
      */
-    public function createSitemaps()
+    public function createSitemaps(): array
     {
         $sitemapCounter = 0;
+        $currentFileSize = 0;
 
         foreach ($this->links as $counter => $link) {
-            if ($counter % self::LINKS_PER_FILE_LIMIT == 0) {
+            if ($counter % $this->linksPerFileLimit == 0 || $currentFileSize > $this->fileSizeLimit) {
                 $sitemapCounter++;
+                $currentFileSize = 0;
             }
-            $this->sitemaps[$sitemapCounter][] = "<url>
+            $sitemapElement = "<url>
               <loc>" . $link['link'] . "</loc>
               <lastmod>" . $link['date'] . "</lastmod>
               <changefreq>" . $link['frequency'] . "</changefreq>
               <priority>" . $link['priority'] . "</priority>
            </url>";
+            $this->sitemaps[$sitemapCounter][] = $sitemapElement;
+            $currentFileSize += mb_strlen($sitemapElement);
         }
 
         return $this->sitemaps;
@@ -84,9 +102,8 @@ class SitemapGenerator
 
     /**
      * Saving files to a folder
-     * @param string $folder absolute path to website root folder
      */
-    public function saveAsFiles($folder)
+    public function saveAsFiles(string $folder): void
     {
         $today = (new \DateTime())->format('Y-m-d');
         $sitemapIndexItems = [];
@@ -103,8 +120,7 @@ class SitemapGenerator
                   <lastmod>' . $today . '</lastmod></sitemap>';
         }
 
-        $sitemapIndexContent = '<?xml version="1.0" encoding="UTF-8"?>
-            <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' .
+        $sitemapIndexContent = $this->getHeader() .
             implode(PHP_EOL, $sitemapIndexItems) .
             '</sitemapindex>';
         file_put_contents($folder . '/sitemap.xml', $sitemapIndexContent);
@@ -112,9 +128,8 @@ class SitemapGenerator
 
     /**
      * Getting a header of XML
-     * @return string
      */
-    private function getHeader()
+    private function getHeader(): string
     {
         return '<?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
@@ -122,9 +137,8 @@ class SitemapGenerator
 
     /**
      * Getting a footer of XML
-     * @return string
      */
-    private function getFooter()
+    private function getFooter(): string
     {
         return '</urlset>';
     }
