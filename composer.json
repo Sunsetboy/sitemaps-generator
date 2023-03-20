@@ -1,6 +1,7 @@
 {
   "name": "yurcrm/sitemap-generator",
   "description": "XML sitemaps generation",
+  "license": "MIT",
   "config": {
   },
   "require": {
