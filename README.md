@@ -16,17 +16,17 @@ Just create few sitemaps and link them together!
 This package helps you to create sitemap files for any number of pages on your website.
  
 ### How it works?
-My solution takes any number of links provided by you and packs them into XML files up to 50000 links each 
-(sitemap_1.xml, sitemap_2.xml, etc). It also creates an index sitemap file sitemap.xml. 
+My solution takes any number of links provided by you and packs them into XML files up to 50000 links and 10 MB each 
+(sitemap_1.xml, sitemap_2.xml, etc). These limitations are configurable. It also creates an index sitemap file sitemap.xml. 
 
 After generation of sitemap files you can add index sitemap to the search engine using tools like Google Webmaster.
 You can also add to your robots.txt file:
 ```
-Sitemap: http://yoursite.com/sitemap.xml 
+Sitemap: https://yoursite.com/sitemap.xml 
 ```
 
 ### Requirements
-PHP 7.3+
+PHP 7.4+ with mb_string extension
 
 ### Installation
 You can install this package using Composer.
@@ -38,20 +38,20 @@ composer require yurcrm/sitemap-generator
 ```
 $sitemapGenerator = new SitemapGenerator();
 // your website URL
-$siteUrl = 'http://example.com';
+$siteUrl = 'https://example.com';
 
 /*
 *   You should generate this array of links according to your website content
 */
 $links = [
     [
-        'link' => 'http://example.com/123',
+        'link' => 'https://example.com/123',
         'date' => '2018-12-07',
         'frequency' => 'weekly',
         'priority' => 0.5,
     ],
     [
-        'link' => 'http://example.com/456',
+        'link' => 'https://example.com/456',
         'date' => '2018-12-07',
         'frequency' => 'weekly',
         'priority' => 0.5,
@@ -60,6 +60,8 @@ $links = [
 
 $sitemapGenerator->setSiteUrl($siteUrl)
 ->setLinks($links)
+->setFileSizeLimit(5*1024*1024)
+->setLinksPerFileLimit(30_000)
 ->createSitemaps();
 
 // save files to the folder (use absolute path) 
