@@ -44,18 +44,18 @@ $siteUrl = 'https://example.com';
 *   You should generate this array of links according to your website content
 */
 $links = [
-    [
-        'link' => 'https://example.com/123',
-        'date' => '2018-12-07',
-        'frequency' => 'weekly',
-        'priority' => 0.5,
-    ],
-    [
-        'link' => 'https://example.com/456',
-        'date' => '2018-12-07',
-        'frequency' => 'weekly',
-        'priority' => 0.5,
-    ]
+    new SitemapUrl(
+        'https://www.100yuristov.com/123',
+        '2018-12-07',
+        'weekly',
+        0.5,
+    ),
+    new SitemapUrl(
+        'https://www.100yuristov.com/123456',
+        '2018-12-07',
+        'weekly',
+        0.5,
+    ),
 ];
 
 $sitemapGenerator->setSiteUrl($siteUrl)
@@ -66,6 +66,17 @@ $sitemapGenerator->setSiteUrl($siteUrl)
 
 // save files to the folder (use absolute path) 
 $sitemapGenerator->saveAsFiles('/var/www/site');
+```
+
+### Usage with generator
+Use this approach for big sitemaps to limit memory usage
+```
+// $linksGenerator - PHP generator which returns SitemapUrl objects
+
+$sitemapsCount = $sitemapGenerator->setSiteUrl('https://www.100yuristov.com')
+    ->setFileSizeLimit(5*1024*1024)
+    ->setLinksPerFileLimit(30_000)
+    ->createFilesFromLinksGenerator($linksGenerator, self::TMP_SITEMAPS_FOLDER);
 ```
 
 ### Any questions?
