@@ -3,6 +3,9 @@
 namespace SitemapGenerator;
 
 
+use Generator;
+use Iterator;
+
 /**
  * XML sitemaps generator with support of sitemaps with 50000+ pages
  * Class SitemapGenerator
@@ -142,5 +145,76 @@ class SitemapGenerator
     private function getFooter(): string
     {
         return '</urlset>';
+    }
+
+    public function createFilesFromLinksGenerator(Generator $linksGenerator, string $folder): int
+    {
+        // empty iterator
+        if (is_null($linksGenerator->current())) {
+            return 0;
+        }
+
+        $today = (new \DateTime())->format('Y-m-d');
+        $sitemapIndexItems = [];
+        $currentFileLinksCount = 0;
+        $currentFileSize = 0;
+        $sitemapCounter = 0;
+
+        $currentFile = fopen($this->getSitemapFilePath($folder, $sitemapCounter + 1), 'w');
+        fwrite($currentFile, $this->getHeader());
+
+        while($link = $linksGenerator->current()) {
+
+            // store links into files
+            if ($currentFileLinksCount == $this->linksPerFileLimit || $currentFileSize > $this->fileSizeLimit) {
+                // current sitemap file reached the limits
+                fwrite($currentFile, $this->getFooter());
+                fclose($currentFile);
+
+                $sitemapIndexItems[] = '<sitemap>
+                  <loc>' . $this->siteUrl . '/sitemap_' . $sitemapCounter . '.xml</loc>
+                  <lastmod>' . $today . '</lastmod></sitemap>';
+                $sitemapCounter++;
+                $currentFileSize = 0;
+                $currentFileLinksCount = 0;
+
+                $currentFile = fopen($this->getSitemapFilePath($folder, $sitemapCounter + 1), 'w');
+                fwrite($currentFile, $this->getHeader());
+            }
+            $sitemapElement = "<url>
+              <loc>" . $link['link'] . "</loc>
+              <lastmod>" . $link['date'] . "</lastmod>
+              <changefreq>" . $link['frequency'] . "</changefreq>
+              <priority>" . $link['priority'] . "</priority>
+            </url>";
+
+            fwrite($currentFile, $sitemapElement . PHP_EOL);
+            $currentFileSize += mb_strlen($sitemapElement);
+            $currentFileLinksCount++;
+
+            $linksGenerator->next();
+        }
+
+        // finalize the last sitemap file
+        fwrite($currentFile, $this->getFooter());
+        fclose($currentFile);
+
+        $sitemapIndexItems[] = '<sitemap>
+                  <loc>' . $this->siteUrl . '/sitemap_' . $sitemapCounter . '.xml</loc>
+                  <lastmod>' . $today . '</lastmod></sitemap>';
+
+        // write the index sitemap file to disk
+        $sitemapIndexContent = '<?xml version="1.0" encoding="UTF-8"?>
+            <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' .
+            implode(PHP_EOL, $sitemapIndexItems) . PHP_EOL .
+            '</sitemapindex>';
+        file_put_contents($folder . '/sitemap.xml', $sitemapIndexContent);
+
+        return count($sitemapIndexItems);
+    }
+
+    private function getSitemapFilePath(string $folder, int $sitemapNumber): string
+    {
+        return $folder . '/sitemap_' . $sitemapNumber . '.xml';
     }
 }
