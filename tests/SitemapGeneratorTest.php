@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use SitemapGenerator\SitemapGenerator;
+use SitemapGenerator\SitemapUrl;
 
 
 class SitemapGeneratorTest extends TestCase
@@ -47,12 +48,12 @@ class SitemapGeneratorTest extends TestCase
         return [
             'one link, default limits' => [
                 'links' => [
-                    [
-                        'link' => 'https://www.100yuristov.com/123',
-                        'date' => '2018-12-07',
-                        'frequency' => 'weekly',
-                        'priority' => 0.5,
-                    ],
+                    new SitemapUrl(
+                        'https://www.100yuristov.com/123',
+                        '2018-12-07',
+                        'weekly',
+                        0.5,
+                    )
                 ],
                 'elementsLimit' => 50000,
                 'sizeLimit' => 10 * 1024 * 1024,
@@ -60,18 +61,18 @@ class SitemapGeneratorTest extends TestCase
             ],
             'two links, limit 1 element' => [
                 'links' => [
-                    [
-                        'link' => 'https://www.100yuristov.com/123',
-                        'date' => '2018-12-07',
-                        'frequency' => 'weekly',
-                        'priority' => 0.5,
-                    ],
-                    [
-                        'link' => 'https://www.100yuristov.com/123456',
-                        'date' => '2018-12-07',
-                        'frequency' => 'weekly',
-                        'priority' => 0.5,
-                    ],
+                    new SitemapUrl(
+                        'https://www.100yuristov.com/123',
+                        '2018-12-07',
+                        'weekly',
+                        0.5,
+                    ),
+                    new SitemapUrl(
+                        'https://www.100yuristov.com/123456',
+                        '2018-12-07',
+                        'weekly',
+                        0.5,
+                    ),
                 ],
                 'elementsLimit' => 1,
                 'sizeLimit' => 10 * 1024 * 1024,
@@ -79,18 +80,18 @@ class SitemapGeneratorTest extends TestCase
             ],
             'two links, file size limit' => [
                 'links' => [
-                    [
-                        'link' => 'https://www.100yuristov.com/123',
-                        'date' => '2018-12-07',
-                        'frequency' => 'weekly',
-                        'priority' => 0.5,
-                    ],
-                    [
-                        'link' => 'https://www.100yuristov.com/123456',
-                        'date' => '2018-12-07',
-                        'frequency' => 'weekly',
-                        'priority' => 0.5,
-                    ],
+                    new SitemapUrl(
+                        'https://www.100yuristov.com/123',
+                        '2018-12-07',
+                        'weekly',
+                        0.5,
+                    ),
+                    new SitemapUrl(
+                        'https://www.100yuristov.com/123456',
+                        '2018-12-07',
+                        'weekly',
+                        0.5,
+                    ),
                 ],
                 'elementsLimit' => 10,
                 'sizeLimit' => 100,
@@ -104,9 +105,9 @@ class SitemapGeneratorTest extends TestCase
      */
     public function testCreateFilesFromLinksGenerator(
         Generator $linksGenerator,
-        int $elementsLimit,
-        int $sizeLimit,
-        int $expectedFilesNumber
+        int       $elementsLimit,
+        int       $sizeLimit,
+        int       $expectedFilesNumber
     ) {
         $sitemapGenerator = new SitemapGenerator();
 
@@ -143,12 +144,13 @@ class SitemapGeneratorTest extends TestCase
     private static function createLinksGenerator(int $size): Generator
     {
         for ($i = 0; $i < $size; $i++) {
-            yield [
-                'link' => 'https://www.100yuristov.com/' . $i . '.html',
-                'date' => '2018-12-07',
-                'frequency' => 'weekly',
-                'priority' => 0.5,
-            ];
+            yield
+            new SitemapUrl(
+                'https://www.100yuristov.com/' . $i . '.html',
+                '2018-12-07',
+                'weekly',
+                0.5,
+            );
         }
     }
 }

@@ -2,9 +2,7 @@
 
 namespace SitemapGenerator;
 
-
 use Generator;
-use Iterator;
 
 /**
  * XML sitemaps generator with support of sitemaps with 50000+ pages
@@ -19,13 +17,8 @@ class SitemapGenerator
     private int $fileSizeLimit = 10 * 1024 * 1024 - 1000;
 
     /**
-     * @var array
-     * @example [
-     *      'link' => 'http://example.com/123',
-     *      'date' => '2018-12-07',
-     *      'frequency' => 'weekly',
-     *      'priority' => 0.5,
-     *  ]
+     * @var SitemapUrl[]
+     *
      */
     protected array $links = [];
 
@@ -91,10 +84,10 @@ class SitemapGenerator
                 $currentFileSize = 0;
             }
             $sitemapElement = "<url>
-              <loc>" . $link['link'] . "</loc>
-              <lastmod>" . $link['date'] . "</lastmod>
-              <changefreq>" . $link['frequency'] . "</changefreq>
-              <priority>" . $link['priority'] . "</priority>
+              <loc>" . $link->getLink() . "</loc>
+              <lastmod>" . $link->getDate() . "</lastmod>
+              <changefreq>" . $link->getFrequency() . "</changefreq>
+              <priority>" . $link->getPriority() . "</priority>
            </url>";
             $this->sitemaps[$sitemapCounter][] = $sitemapElement;
             $currentFileSize += mb_strlen($sitemapElement);
@@ -164,6 +157,7 @@ class SitemapGenerator
         fwrite($currentFile, $this->getHeader());
 
         while($link = $linksGenerator->current()) {
+            /** @var SitemapUrl $link */
 
             // store links into files
             if ($currentFileLinksCount == $this->linksPerFileLimit || $currentFileSize > $this->fileSizeLimit) {
@@ -182,10 +176,10 @@ class SitemapGenerator
                 fwrite($currentFile, $this->getHeader());
             }
             $sitemapElement = "<url>
-              <loc>" . $link['link'] . "</loc>
-              <lastmod>" . $link['date'] . "</lastmod>
-              <changefreq>" . $link['frequency'] . "</changefreq>
-              <priority>" . $link['priority'] . "</priority>
+              <loc>" . $link->getLink() . "</loc>
+              <lastmod>" . $link->getDate() . "</lastmod>
+              <changefreq>" . $link->getFrequency() . "</changefreq>
+              <priority>" . $link->getPriority() . "</priority>
             </url>";
 
             fwrite($currentFile, $sitemapElement . PHP_EOL);
